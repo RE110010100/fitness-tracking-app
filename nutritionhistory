@@ -1,0 +1,33 @@
+import json
+import logging
+from clients import get_dynamo_client
+from boto3.dynamodb.conditions import Key
+from shareFitness import SocialMedia
+
+dynamo_client = get_dynamo_client()
+
+# NutritionHistory class inherits from SocialMedia class and overrides the share method.
+# the share method returns the nutrition history of the user.
+class NutritionHistory(SocialMedia):
+    def __init__(email):
+        self.email = email
+        
+    def share(self):
+        try:        
+            table = dynamo_client.Table('Nutrition')
+            response = table.query(KeyConditionExpression=Key('email').eq(self.email))
+            items = response['Items']
+           
+            responses = []
+            
+            for i in range(len(items[0]["nutrition"])):
+                response = {"food": items[0]["nutrition"][i]["food"], "quantity": items[0]["nutrition"][i]["quantity"],
+                            "calorie":int(items[0]["nutrition"][i]["calorie"])}
+                logger.debug(response)
+                responses.append(response)
+            
+            return json.dumps(responses)
+        except Exception as e:
+            logger.error(e)
+            response = {"Message": str(e)}
+            return {"status": 204, "headers": headers, "body":json.dumps(response)}

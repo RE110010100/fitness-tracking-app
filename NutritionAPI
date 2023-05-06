@@ -1,0 +1,107 @@
+import json
+from clients import get_dynamo_client
+from datetime import datetime
+from boto3.dynamodb.conditions import Key
+
+dynamo_client = get_dynamo_client()
+
+# Nutrition class is used to insert and display nutrition data of the user.
+class Nutrition:
+    def __init__(self, event):
+        self.email = event["email"]
+        self.nutrition = event.get("nutrition", None)
+
+    def invokeNutritionAPI(self):
+        if(self.nutrition):
+            return self.insertNutrition()
+        else:
+            return self.displayNutrition()
+
+    def insertNutrition(self):
+        try:
+            email = self.email
+            nutrition = self.nutrition
+        
+            
+            date = datetime.today().strftime('%Y-%m-%d')
+            for i in range(len(nutrition)):
+                nutrition[i]["quantity"] = str(nutrition[i]["quantity"])+nutrition[i]["units"]
+                nutrition[i]["date"] = date
+                
+            table = dynamo_client.Table('Nutrition')
+            response = table.query(
+                    KeyConditionExpression=Key('email').eq(email)
+            )
+            items = response['Items']
+            if len(items) == 0:
+                table.put_item(Item={'email': email, 'nutrition': nutrition})
+                response = {"Message": "Data item Succesfully pushed"}
+                return {"status": 200, 
+                        "headers": {
+                            "Content-Type" : "application/json",
+                            "Access-Control-Allow-Headers" : "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
+                            "Access-Control-Allow-Methods" : "OPTIONS,POST",
+                            "Access-Control-Allow-Credentials" : "true",
+                            "Access-Control-Allow-Origin" : "*",
+                            "X-Requested-With" : "*"
+                        },
+                        "body":json.dumps(response)}
+            elif email == items[0]['email']:
+                table.update_item(
+                    Key={
+                        "email": email
+                    },
+                    UpdateExpression = "SET #m = list_append(nutrition, :newnutrition)",
+                    ExpressionAttributeNames={
+                        "#m": "nutrition",
+                    },
+                    ExpressionAttributeValues={
+                        ":newnutrition": nutrition
+                    },
+                )
+                response = {"Message": "Data item Updated"}
+                return {"status": 200, 
+                        "headers": {
+                            "Content-Type" : "application/json",
+                            "Access-Control-Allow-Headers" : "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
+                            "Access-Control-Allow-Methods" : "OPTIONS,POST",
+                            "Access-Control-Allow-Credentials" : "true",
+                            "Access-Control-Allow-Origin" : "*",
+                            "X-Requested-With" : "*"
+                        },
+                        "body":json.dumps(response)}
+        except Exception as e:
+            response = {"Message": str(e)}
+            return {"status": 204, "body":json.dumps(response)}
+    
+    def displayNutrition(self):
+        try:
+            headers = {
+                        "Content-Type" : "application/json",
+                        "Access-Control-Allow-Headers" : "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
+                        "Access-Control-Allow-Methods" : "OPTIONS,POST",
+                        "Access-Control-Allow-Credentials" : "true",
+                        "Access-Control-Allow-Origin" : "*",
+                        "X-Requested-With" : "*"
+                    }
+            email = self.email
+            
+            table = dynamo_client.Table('Nutrition')
+            response = table.query(
+                    KeyConditionExpression=Key('email').eq(email)
+            )
+            items = response['Items']
+            if len(items) == 0:
+                response = {"Message": "Email Address not Found"}
+                return {"status": 206, "headers": headers, "body":json.dumps(response)}
+            elif email == items[0]['email']:
+                responses = []
+                for i in range(len(items[0]["nutrition"])):
+                    response = {"Message": "User Found", "food": items[0]["nutrition"][i]["food"], "quantity": items[0]["nutrition"][i]["quantity"],
+                                "calorie":int(items[0]["nutrition"][i]["calorie"])}
+                    responses.append(response)
+                return {"status": 200, "headers": headers, "body":json.dumps(responses)}
+
+        except Exception as e:
+            response = {"Message": str(e)}
+            return {"status": 204, "headers": headers, "body":json.dumps(response)}
