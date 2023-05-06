@@ -1,4 +1,6 @@
 ProjectReport present in the file named ProjectRepo_PrateekKumar_RohanEswara
+Project Demo present in the file named DemoProject7_PrateekKumar_RohanEswara
+
 
 **--Fitness Tracking Application**
 
