@@ -16,7 +16,7 @@ class Nutrition:
             return self.insertNutrition()
         else:
             return self.displayNutrition()
-
+    # This function is used to insert nutrition data of the user.
     def insertNutrition(self):
         try:
             email = self.email
@@ -46,6 +46,7 @@ class Nutrition:
                             "X-Requested-With" : "*"
                         },
                         "body":json.dumps(response)}
+            # If the email address is already in the database, update the data.
             elif email == items[0]['email']:
                 table.update_item(
                     Key={
@@ -59,6 +60,7 @@ class Nutrition:
                         ":newnutrition": nutrition
                     },
                 )
+                # return the updated data with a status code of 200.
                 response = {"Message": "Data item Updated"}
                 return {"status": 200, 
                         "headers": {
@@ -74,6 +76,7 @@ class Nutrition:
             response = {"Message": str(e)}
             return {"status": 204, "body":json.dumps(response)}
     
+    # This function is used to display nutrition data of the user.
     def displayNutrition(self):
         try:
             headers = {

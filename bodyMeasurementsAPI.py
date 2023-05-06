@@ -4,6 +4,10 @@ from boto3.dynamodb.conditions import Key
 
 dynamo_client = get_dynamo_client()
 
+# This class is used to insert and display body measurements of the user
+# the API takes in the following parameters:
+# chest, waist, height, weight, email 
+# defines the header like content type, access control, etc to enable CORS.
 class BodyMeasurementsClass:
 
     def __init__(self, event) -> None:
@@ -13,6 +17,7 @@ class BodyMeasurementsClass:
         self.weight = event.get('weight', None)
         self.email = event["email"]
     
+    # This function is used to insert body measurements of the user.
     def insertBodyMeasurements(self):
         try:
             headers = {
@@ -29,7 +34,8 @@ class BodyMeasurementsClass:
             waist = self.waist
             weight = self.weight
             chest = self.chest
-    
+
+            # Check if the email address is already in the database.
             table = dynamo_client.Table('BodyMeasurements')
             
             response = table.query(
@@ -50,6 +56,7 @@ class BodyMeasurementsClass:
             response = {"Message": str(e)}
             return {"status": 204, "headers": headers, "body":json.dumps(response)}
 
+    # This function is used to display body measurements of the user.
     def displayBodyMeasurements(self):
         try:
             headers = {

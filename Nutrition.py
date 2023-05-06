@@ -1,5 +1,6 @@
 from DashboardMenu import DashboardMenu
 
+# Nutrition class is a subclass of DashboardMenu class and it is used to store the user's nutrition information
 class Nutrition(DashboardMenu):
     def __init__(self):
         super().__init__("Nutrition")

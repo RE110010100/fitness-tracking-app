@@ -1,5 +1,6 @@
 from DashboardMenu import DashboardMenu
 
+# BodyMeasurements class is a subclass of DashboardMenu class and it is used to store the user's body measurements
 class BodyMeasurements(DashboardMenu):
     def __init__(self):
         super().__init__("BodyMeasurements")

@@ -23,6 +23,7 @@ def get_dynamo_client():
     )
     return dynamo_client
 
+# get_s3_client() is used to get the boto3 client for S3.
 def get_s3_client():
     sts_client = boto3.client('sts')
     assumed_role_object=sts_client.assume_role(

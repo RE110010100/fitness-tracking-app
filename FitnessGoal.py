@@ -1,6 +1,7 @@
 from enum import Enum
 from DashboardMenu import DashboardMenu
-
+# FitnessGoal class is a subclass of DashboardMenu class and it is used to store the user's fitness goals.
+# The fitness goals are weight loss, strength gain, and endurance improvement.
 class GoalType(Enum):
     DEFAULT = 0
     WEIGHT_LOSS = 1

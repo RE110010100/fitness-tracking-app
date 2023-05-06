@@ -4,6 +4,7 @@ from boto3.dynamodb.conditions import Key
 
 dynamo_client = get_dynamo_client()
 
+# Users class is used to signup and login users.
 class Users:
     def __init__(self, event):
         self.email = event["email"]
@@ -17,6 +18,8 @@ class Users:
         else:
             return self.loginUser()
     
+    # This function is used to signup users and store their data in the database.
+    # The data is stored in the Users table.
     def signupUser(self):
         try:
             name = self.name
@@ -44,6 +47,8 @@ class Users:
             response = {"Message": str(e)}
             return {"status": 204, "body":json.dumps(response)}
 
+    # This function is used to login users.
+    # The data is fetched from the Users table.
     def loginUser(self):
         try:
             headers = {

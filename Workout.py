@@ -1,3 +1,4 @@
+# Workouts are the main component of the workout plan. They are the exercises that the user will perform.
 class Workout:
     def __init__(self, exercise_type, sets, repetitions, intensity, calories_burned):
         self.exercise_type = exercise_type

@@ -1,5 +1,7 @@
+# Description: Abstract class for all dashboard menus
 from abc import ABC, abstractmethod
 
+# Abstract class for all dashboard menus
 class DashboardMenu(ABC):
     def __init__(self, menuID):
         
