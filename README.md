@@ -1,5 +1,5 @@
 ProjectReport present in the file named ProjectRepo_PrateekKumar_RohanEswara <br />
-Project Demo present in the file named DemoProject7_PrateekKumar_RohanEswara <br />
+Project Demo present at https://drive.google.com/file/d/1-VleNcr2xmMSu7ZHjOQEnsxl2tDfLzme/view?usp=sharing  <br />
 
 
 **--Fitness Tracking Application**
